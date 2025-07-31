@@ -1,89 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Staff Portal - Superficial Games</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/public/styles.css">
 </head>
 <body>
-  <div class="block">
-    <h2>🛠 Staff Portal</h2>
+  <h1>Superficial Games - Staff Portal</h1>
 
-    <!-- MAINTENANCE MODE -->
-    <label><input type="checkbox" id="maintenanceToggle"> Maintenance Mode</label>
-    <input type="text" id="maintenanceMsg" placeholder="Maintenance Message"><br><br>
+  <section id="homepage-editor">
+    <h2>Homepage Editor</h2>
+    <textarea id="homepage-content" style="width: 100%; height: 300px;"></textarea><br>
+    <button onclick="undoHomepage()" style="margin-top: 0.5em;">Undo Changes</button>
+    <button onclick="saveHomepage()">Save Homepage</button>
 
-    <!-- HOMEPAGE EDITOR -->
-    <h3>🏠 Homepage Blocks</h3>
-    <textarea id="homepage" rows="8" placeholder="Homepage content (HTML/JSON blocks)"></textarea>
+    <div style="margin-top: 1em;">
+      <label for="version-select">Load Previous Version:</label>
+      <select id="version-select"></select>
+      <button onclick="loadSelectedVersion()">Load Version</button>
+    </div>
+  </section>
 
-    <!-- STAFF LIST -->
-    <h3>👥 Staff List</h3>
-    <textarea id="staff" rows="8" placeholder="Staff info JSON"></textarea>
-
-    <!-- IMAGE UPLOAD -->
-    <h3>🖼 Upload Image</h3>
-    <input type="file" id="upload"><br><br>
-
-    <button onclick="saveAll()">💾 Save All</button>
-  </div>
+  <footer style="margin-top: 2em; text-align: center; color: gray;">
+    v2.5.1
+  </footer>
 
   <script>
-    const token = 'your-super-secret-token'; // Must match server.js token
-
-    async function saveAll() {
-      await fetch('/api/save-maintenance', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-        body: JSON.stringify({
-          enabled: document.getElementById('maintenanceToggle').checked,
-          message: document.getElementById('maintenanceMsg').value
-        })
-      });
-
-      await fetch('/api/save-homepage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-        body: JSON.stringify({ content: document.getElementById('homepage').value })
-      });
-
-      await fetch('/api/save-staff', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-        body: JSON.stringify({ staff: document.getElementById('staff').value })
-      });
-
-      alert('Saved!');
-    }
-
-    document.getElementById('upload').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      const formData = new FormData();
-      formData.append('image', file);
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { Authorization: 'Bearer ' + token },
-        body: formData
-      });
-
+    async function loadHomepage() {
+      const res = await fetch('/api/homepage');
       const data = await res.json();
-      alert('Uploaded to: ' + data.url);
-    });
-
-    // Load existing content
-    async function load() {
-      const homepage = await fetch('/data/homepage.json').then(r => r.json());
-      const staff = await fetch('/data/staff.json').then(r => r.json());
-      const maintenance = await fetch('/data/maintenance.json').then(r => r.json());
-
-      document.getElementById('homepage').value = homepage.content || '';
-      document.getElementById('staff').value = staff.staff || '';
-      document.getElementById('maintenanceToggle').checked = maintenance.enabled;
-      document.getElementById('maintenanceMsg').value = maintenance.message || '';
+      document.getElementById('homepage-content').value = data.html || '';
     }
 
-    load();
+    async function saveHomepage() {
+      const html = document.getElementById('homepage-content').value;
+      const confirmSave = confirm("Are you sure you want to overwrite the homepage?");
+      if (!confirmSave) return;
+
+      const res = await fetch('/api/homepage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html })
+      });
+
+      if (res.ok) {
+        alert('Homepage saved!');
+        loadVersions();
+      } else {
+        alert('Save failed.');
+      }
+    }
+
+    async function undoHomepage() {
+      const res = await fetch('/api/homepage');
+      const data = await res.json();
+      document.getElementById('homepage-content').value = data.html || '';
+    }
+
+    async function loadVersions() {
+      const res = await fetch('/api/homepage/versions');
+      const data = await res.json();
+      const select = document.getElementById('version-select');
+      select.innerHTML = '';
+      data.versions.forEach(filename => {
+        const option = document.createElement('option');
+        option.value = filename;
+        option.textContent = filename;
+        select.appendChild(option);
+      });
+    }
+
+    async function loadSelectedVersion() {
+      const filename = document.getElementById('version-select').value;
+      if (!filename) return;
+
+      const res = await fetch(`/api/homepage/version/${filename}`);
+      const data = await res.json();
+      document.getElementById('homepage-content').value = data.html || '';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadHomepage();
+      loadVersions();
+    });
   </script>
 </body>
 </html>

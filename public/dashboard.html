@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Superficial Games Staff</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="block">
+    <h2>Welcome to the Staff Portal</h2>
+    <a href="/staff.html">🔧 Edit Website</a><br><br>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('sb_token');
+      window.location.href = '/login.html';
+    }
+
+    // redirect if not logged in
+    if (!localStorage.getItem('sb_token')) {
+      window.location.href = '/login.html';
+    }
+  </script>
+</body>
+</html>

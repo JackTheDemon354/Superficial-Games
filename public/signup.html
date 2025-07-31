@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sign Up - Superficial Games Staff</title>
-  <link rel="stylesheet" href="/style.css">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; }
+    input, button { width: 100%; margin: 8px 0; padding: 10px; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <div class="block">
-    <h2>📝 Staff Signup</h2>
-    <input type="email" id="email" placeholder="Email"><br><br>
-    <input type="password" id="password" placeholder="Password"><br><br>
-    <button onclick="signup()">Sign Up</button>
-    <p><a href="login.html">Back to Login</a></p>
-  </div>
+
+  <h2>📝 Staff Signup</h2>
+
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <button onclick="signup()">Sign Up</button>
+
+  <p><a href="login.html">Back to Login</a></p>
 
   <script>
+    const supabaseUrl = 'https://kesmvuagqejhjapbtyxa.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtlc212dWFncWVqaGphcGJ0eXhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4Njk5NzgsImV4CI6MjA2OTQ0NTk3OH0.QQCuyekoXlzlG3H6JBj1YxS_LE0RZV1QIdhJDl1Kats';
+    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
     async function signup() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      const res = await fetch('https://kesmvuagqejhjapbtyxa.supabase.co/auth/v1/signup', {
-        method: 'POST',
-        headers: {
-          apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtlc212dWFncWVqaGphcGJ0eXhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4Njk5NzgsImV4cCI6MjA2OTQ0NTk3OH0.QQCuyekoXlzlG3H6JBj1YxS_LE0RZV1QIdhJDl1Kats',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+      const { data, error } = await supabase.auth.signUp({ email, password });
 
-      const data = await res.json();
-      if (data.user) {
-        alert('Account created! Now log in.');
-        window.location.href = 'login.html';
+      if (error) {
+        alert('Error: ' + error.message);
       } else {
-        alert('Error: ' + (data.error_description || data.message));
+        alert('Account created! Please check your email to confirm.');
+        window.location.href = 'login.html';
       }
     }
   </script>
+
 </body>
 </html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - Superficial Games Staff</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="block">
+    <h2>📝 Staff Signup</h2>
+    <input type="email" id="email" placeholder="Email"><br><br>
+    <input type="password" id="password" placeholder="Password"><br><br>
+    <button onclick="signup()">Sign Up</button>
+    <p><a href="login.html">Back to Login</a></p>
+  </div>
+
+  <script>
+    async function signup() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('https://kesmvuagqejhjapbtyxa.supabase.co/auth/v1/signup', {
+        method: 'POST',
+        headers: {
+          apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtlc212dWFncWVqaGphcGJ0eXhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4Njk5NzgsImV4cCI6MjA2OTQ0NTk3OH0.QQCuyekoXlzlG3H6JBj1YxS_LE0RZV1QIdhJDl1Kats',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (data.user) {
+        alert('Account created! Now log in.');
+        window.location.href = 'login.html';
+      } else {
+        alert('Error: ' + (data.error_description || data.message));
+      }
+    }
+  </script>
+</body>
+</html>

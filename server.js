@@ -1,13 +1,18 @@
-require('dotenv').config(); // Load .env variables automatically
+require('dotenv').config();
 
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const bodyParser = require('body-parser');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const supabaseUrl = 'https://kesmvuagqejhjapbtyxa.supabase.co';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // Your service_role key, secret
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -19,20 +24,28 @@ const homepageFile = path.join(dataDir, 'Homepage.json');
 const maintenanceFile = path.join(dataDir, 'Maintenance.json');
 const staffFile = path.join(dataDir, 'Staff.json');
 
-const SUPABASE_TOKEN = process.env.SUPABASE_TOKEN;
+// Middleware: verify Supabase JWT access token from frontend
+async function verifyAuth(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ error: 'No authorization header' });
 
-function verifyAuth(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ error: 'No authorization header' });
+    const token = authHeader.replace('Bearer ', '');
+    const { data, error } = await supabase.auth.getUser(token);
 
-  if (authHeader !== `Bearer ${SUPABASE_TOKEN}`) {
-    return res.status(401).json({ error: 'Invalid token' });
+    if (error || !data.user) {
+      return res.status(401).json({ error: 'Invalid or expired token' });
+    }
+
+    req.user = data.user;
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Unauthorized' });
   }
-
-  next();
 }
 
-// Homepage API
+// API routes protected by verifyAuth
+
 app.get('/api/homepage', verifyAuth, (req, res) => {
   try {
     const content = fs.readFileSync(homepageFile, 'utf-8');
@@ -55,38 +68,16 @@ app.post('/api/homepage', verifyAuth, (req, res) => {
 
     fs.writeFileSync(homepageFile, JSON.stringify({ html }, null, 2));
     res.json({ success: true });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Save failed.' });
   }
 });
 
-app.get('/api/homepage/versions', verifyAuth, (req, res) => {
-  fs.readdir(dataDir, (err, files) => {
-    if (err) return res.status(500).json({ error: 'Failed to read directory' });
-    const versions = files.filter(f => f.startsWith('Homepage.') && f.endsWith('.json'));
-    res.json({ versions });
-  });
-});
-
-app.get('/api/homepage/version/:filename', verifyAuth, (req, res) => {
-  const { filename } = req.params;
-  const filePath = path.join(dataDir, filename);
-  if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Version not found' });
-
-  try {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    res.json(JSON.parse(content));
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to load version' });
-  }
-});
-
-// Maintenance API
 app.get('/api/maintenance', (req, res) => {
   try {
-    const status = fs.readFileSync(maintenanceFile, 'utf-8');
-    res.json(JSON.parse(status));
-  } catch (err) {
+    const content = fs.readFileSync(maintenanceFile, 'utf-8');
+    res.json(JSON.parse(content));
+  } catch {
     res.status(500).json({ error: 'Could not read maintenance status' });
   }
 });
@@ -99,17 +90,16 @@ app.post('/api/maintenance', verifyAuth, (req, res) => {
   try {
     fs.writeFileSync(maintenanceFile, JSON.stringify({ enabled }, null, 2));
     res.json({ success: true });
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Could not update maintenance status' });
   }
 });
 
-// Staff API
 app.get('/api/staff', (req, res) => {
   try {
     const content = fs.readFileSync(staffFile, 'utf-8');
     res.json(JSON.parse(content));
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: 'Could not read staff data.' });
   }
 });
@@ -122,7 +112,7 @@ app.get('/', (req, res) => {
       return res.send('<h1>Maintenance Mode</h1><p>The site is currently under maintenance.</p>');
     }
   } catch {
-    // If maintenance.json missing or broken, just serve homepage
+    // ignore
   }
   res.sendFile(path.join(__dirname, 'public', 'Index.html'));
 });

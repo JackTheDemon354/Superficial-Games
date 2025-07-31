@@ -1,14 +1,34 @@
-<!-- This file is your live homepage content, shown via iframe in staff.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Superficial Games</title>
-  <style>
-    body { font-family: Calibri; text-align: center; padding: 40px; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome - Superficial Games</title>
+  <link rel="stylesheet" href="/Styles.css" />
 </head>
 <body>
-  <h1>Welcome to Superficial Games!</h1>
-  <p>Don't forget to get Superficial Games Premium...</p>
+  <div class="block">
+    <h1>👋 Welcome to Superficial Games</h1>
+    <p>This is the main portal for staff and maintenance access.</p>
+    <a href="login.html"><button>Staff Login</button></a>
+    <a href="signup.html"><button>Sign Up</button></a>
+    <a href="dashboard.html"><button>Dashboard</button></a>
+
+    <hr><br>
+
+    <!-- Stripe Buy Button -->
+    <stripe-buy-button
+      buy-button-id="buy_btn_1Rr5YREtJ4yHTBOd97riHFe6"
+      publishable-key="pk_live_51RjqydEtJ4yHTBOdKJ0PhCObt74EO14mzTku7afCLDRL271DAJT8po2XBdxfQLK9fArnvNKLk2V1Mm82ijhmlS4v00aHAJszTb"
+    >
+    </stripe-buy-button>
+  </div>
+
+  <!-- Stripe Script -->
+  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+
+  <footer>
+    <p style="text-align:center; margin-top: 50px;">v2.5.1</p>
+  </footer>
 </body>
 </html>

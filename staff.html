@@ -1,0 +1,65 @@
+<!-- staff.html (Staff Portal) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Superficial Games Staff Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    .block {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Superficial Games - Staff Portal</h1>
+
+  <!-- Maintenance Mode Block -->
+  <div class="block">
+    <h2>🛠 Maintenance Mode</h2>
+    <label>
+      <input type="checkbox" id="maintenanceToggle"> Enable Maintenance Mode
+    </label>
+    <br><br>
+    <label for="maintenanceMsg">Message:</label><br>
+    <textarea id="maintenanceMsg" rows="3" cols="50" placeholder="e.g. Back soon!"></textarea>
+  </div>
+
+  <script>
+    async function loadMaintenance() {
+      const res = await fetch('/maintenance.json');
+      const data = await res.json();
+      document.getElementById('maintenanceToggle').checked = data.enabled;
+      document.getElementById('maintenanceMsg').value = data.message;
+    }
+
+    async function saveMaintenance() {
+      const enabled = document.getElementById('maintenanceToggle').checked;
+      const message = document.getElementById('maintenanceMsg').value;
+
+      await fetch('/save-maintenance', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ enabled, message })
+      });
+    }
+
+    document.getElementById('maintenanceToggle').addEventListener('change', saveMaintenance);
+    document.getElementById('maintenanceMsg').addEventListener('input', saveMaintenance);
+
+    loadMaintenance();
+  </script>
+</body>
+</html>

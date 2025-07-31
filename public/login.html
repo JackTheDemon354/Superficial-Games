@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Staff Login - Superficial Games</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 400px; margin: 50px auto; }
+    label, input { display: block; width: 100%; margin: 8px 0; }
+    button { padding: 10px; width: 100%; margin-top: 12px; }
+    .error { color: red; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <h1>Staff Login</h1>
+
+  <form id="login-form">
+    <label for="email">Email:</label>
+    <input id="email" type="email" required />
+
+    <label for="password">Password:</label>
+    <input id="password" type="password" required />
+
+    <button type="submit">Login</button>
+  </form>
+
+  <div class="error" id="error-msg"></div>
+
+  <script>
+    const supabaseUrl = 'https://kesmvuagqejhjapbtyxa.supabase.co';
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtlc212dWFncWVqaGphcGJ0eXhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM4Njk5NzgsImV4CI6MjA2OTQ0NTk3OH0.QQCuyekoXlzlG3H6JBj1YxS_LE0RZV1QIdhJDl1Kats';
+    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    const form = document.getElementById('login-form');
+    const errorMsg = document.getElementById('error-msg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.textContent = '';
+
+      const email = form.email.value;
+      const password = form.password.value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        errorMsg.textContent = error.message;
+        return;
+      }
+
+      // Save access token in localStorage for API calls
+      localStorage.setItem('access_token', data.session.access_token);
+
+      // Redirect to staff portal
+      window.location.href = '/staff.html';
+    });
+  </script>
+
+</body>
+</html>

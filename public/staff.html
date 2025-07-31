@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Staff Portal - Superficial Games</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="block">
+    <h2>🛠 Staff Portal</h2>
+
+    <!-- MAINTENANCE MODE -->
+    <label><input type="checkbox" id="maintenanceToggle"> Maintenance Mode</label>
+    <input type="text" id="maintenanceMsg" placeholder="Maintenance Message"><br><br>
+
+    <!-- HOMEPAGE EDITOR -->
+    <h3>🏠 Homepage Blocks</h3>
+    <textarea id="homepage" rows="8" placeholder="Homepage content (HTML/JSON blocks)"></textarea>
+
+    <!-- STAFF LIST -->
+    <h3>👥 Staff List</h3>
+    <textarea id="staff" rows="8" placeholder="Staff info JSON"></textarea>
+
+    <!-- IMAGE UPLOAD -->
+    <h3>🖼 Upload Image</h3>
+    <input type="file" id="upload"><br><br>
+
+    <button onclick="saveAll()">💾 Save All</button>
+  </div>
+
+  <script>
+    const token = 'your-super-secret-token'; // Must match server.js token
+
+    async function saveAll() {
+      await fetch('/api/save-maintenance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({
+          enabled: document.getElementById('maintenanceToggle').checked,
+          message: document.getElementById('maintenanceMsg').value
+        })
+      });
+
+      await fetch('/api/save-homepage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({ content: document.getElementById('homepage').value })
+      });
+
+      await fetch('/api/save-staff', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({ staff: document.getElementById('staff').value })
+      });
+
+      alert('Saved!');
+    }
+
+    document.getElementById('upload').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token },
+        body: formData
+      });
+
+      const data = await res.json();
+      alert('Uploaded to: ' + data.url);
+    });
+
+    // Load existing content
+    async function load() {
+      const homepage = await fetch('/data/homepage.json').then(r => r.json());
+      const staff = await fetch('/data/staff.json').then(r => r.json());
+      const maintenance = await fetch('/data/maintenance.json').then(r => r.json());
+
+      document.getElementById('homepage').value = homepage.content || '';
+      document.getElementById('staff').value = staff.staff || '';
+      document.getElementById('maintenanceToggle').checked = maintenance.enabled;
+      document.getElementById('maintenanceMsg').value = maintenance.message || '';
+    }
+
+    load();
+  </script>
+</body>
+</html>

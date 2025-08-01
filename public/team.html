@@ -25,7 +25,7 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 16px;
+      gap: 20px;
       padding: 20px;
     }
 
@@ -33,8 +33,8 @@
       position: relative;
       border: 1px solid #ddd;
       border-radius: 10px;
-      padding: 10px;
-      width: 180px;
+      padding: 16px;
+      width: 250px;
       background: #fff;
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
       text-align: center;
@@ -47,11 +47,11 @@
     }
 
     .team-card img {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       object-fit: cover;
       border-radius: 50%;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .tags {
@@ -68,11 +68,11 @@
 
     .tag {
       display: inline-block;
-      padding: 3px 8px;
+      padding: 4px 10px;
       border-radius: 5px;
-      font-size: 0.75em;
+      font-size: 0.8em;
       color: white;
-      margin: 2px 3px;
+      margin: 2px 4px;
     }
 
     .tag-red { background: #e74c3c; }
@@ -80,10 +80,25 @@
     .tag-yellow { background: #f1c40f; color: #222; }
     .tag-green { background: limegreen; }
 
-    .stars {
-      font-size: 1em;
-      color: gold;
-      margin-top: 4px;
+    .reviews-row {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+      user-select: none;
+    }
+
+    .stars-img {
+      margin-bottom: 6px;
+    }
+
+    /* Star images styling */
+    .stars-img img {
+      width: 28px;
+      height: 28px;
+      margin: 0 2px;
+      vertical-align: middle;
     }
 
     .version {
@@ -97,9 +112,14 @@
   <div class="block">
     <h2>👥 Meet the Team</h2>
     <div id="team" class="team-grid"></div>
+
+    <div class="reviews-row" id="review-container">
+      <div class="stars-img" id="stars-container"></div>
+      <div id="review-text"></div>
+    </div>
   </div>
 
-  <div class="version">v2.5.2</div>
+  <div class="version">v2.5.4</div>
 
   <script>
     async function loadTeam() {
@@ -112,7 +132,6 @@
           const card = document.createElement('div');
           card.className = 'team-card';
 
-          // Create tag elements
           let tagHtml = '';
           if (member.tags && Array.isArray(member.tags)) {
             const colorClass = getTagColorClass(member.name);
@@ -126,7 +145,6 @@
             <h3>${member.name}</h3>
             <p><strong>${member.role}</strong></p>
             ${member.review ? `<p>💬 "${member.review}"</p>` : ''}
-            <div class="stars">⭐️⭐️⭐️⭐️⭐️</div>
             ${tagHtml}
           `;
 
@@ -146,7 +164,44 @@
       return "";
     }
 
+    // Star image base64 data URI (a simple gold star)
+    const starImgSrc = "data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkQ5NTAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHBhdGggZD0iTTExLjk5IDYuMTI3bDIuNjQxIDUuMzg4IDYuMDk3Ljg3MS01LjQ3IDUuMTcyIDEuMjg0IDYuMDYyLTUuNjQ3LTMuMDIxLTUuNjQ3IDMuMDIxIDEuMjg0LTYuMDYyLTUuNDctNS4xNzIgNi4wOTctLjg3MSAyLjY0MS01LjM4OHoiLz48L3N2Zz4=";
+
+    // Array of good review phrases
+    const goodReviews = [
+      "Superficial Games is amazing!",
+      "Best gaming experience ever.",
+      "I love working here every day.",
+      "Creative, fun, and inspiring.",
+      "Our team rocks!",
+      "Gaming excellence at its finest.",
+      "A truly awesome place to be.",
+      "Innovating games with passion.",
+      "Where creativity meets fun!",
+      "Superficial Games is good"
+    ];
+
+    // Show random review + stars
+    function showRandomReview() {
+      const reviewTextEl = document.getElementById("review-text");
+      const starsContainer = document.getElementById("stars-container");
+
+      // Pick random review phrase
+      const phrase = goodReviews[Math.floor(Math.random() * goodReviews.length)];
+      reviewTextEl.textContent = `"${phrase}"`;
+
+      // Show 5 star images
+      starsContainer.innerHTML = "";
+      for (let i = 0; i < 5; i++) {
+        const img = document.createElement("img");
+        img.src = starImgSrc;
+        img.alt = "star";
+        starsContainer.appendChild(img);
+      }
+    }
+
     loadTeam();
+    showRandomReview();
   </script>
 </body>
 </html>

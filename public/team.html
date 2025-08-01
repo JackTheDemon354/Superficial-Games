@@ -19,14 +19,16 @@
 
     h2 {
       text-align: center;
+      margin-bottom: 10px;
     }
 
+    /* Team Cards */
     .team-grid {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      padding: 20px;
+      padding: 20px 0;
     }
 
     .team-card {
@@ -59,6 +61,7 @@
       opacity: 0;
       transform: translateY(15px);
       transition: all 0.4s ease;
+      font-size: 0.9em;
     }
 
     .team-card:hover .tags {
@@ -80,31 +83,88 @@
     .tag-yellow { background: #f1c40f; color: #222; }
     .tag-green { background: limegreen; }
 
-    .reviews-row {
+    /* Reviews Section */
+    .reviews-section {
+      max-width: 1300px;
+      margin: 40px auto 20px;
+      padding: 0 20px;
+    }
+
+    .reviews-section h2 {
       text-align: center;
-      margin-top: 30px;
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .reviews-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .review-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+      width: 300px;
+      padding: 20px;
+      font-size: 0.95em;
+      color: #222;
+      position: relative;
       user-select: none;
+      transition: transform 0.2s ease;
     }
 
-    .stars-img {
-      margin-bottom: 6px;
+    .review-card:hover {
+      transform: translateY(-5px);
     }
 
-    /* Star images styling */
-    .stars-img img {
-      width: 28px;
-      height: 28px;
-      margin: 0 2px;
-      vertical-align: middle;
+    /* Animate stars container on hover */
+    .review-card:hover .review-stars {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .review-stars {
+      margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.4s ease;
+      display: inline-flex;
+      gap: 3px;
+      justify-content: center;
+    }
+
+    .review-stars svg {
+      width: 24px;
+      height: 24px;
+      fill: #fd9500; /* Gold */
+      flex-shrink: 0;
+    }
+
+    /* Empty star greyed out */
+    .star-empty {
+      fill: #ccc;
+    }
+
+    .review-text {
+      font-style: italic;
+      margin-bottom: 12px;
+      min-height: 60px;
+      text-align: center;
+    }
+
+    .review-author {
+      font-weight: bold;
+      text-align: right;
+      color: #555;
     }
 
     .version {
       text-align: center;
-      margin-top: 40px;
+      margin: 40px 0;
       color: #888;
+      user-select: none;
     }
   </style>
 </head>
@@ -112,14 +172,14 @@
   <div class="block">
     <h2>👥 Meet the Team</h2>
     <div id="team" class="team-grid"></div>
-
-    <div class="reviews-row" id="review-container">
-      <div class="stars-img" id="stars-container"></div>
-      <div id="review-text"></div>
-    </div>
   </div>
 
-  <div class="version">v2.5.4</div>
+  <div class="reviews-section">
+    <h2>🌟 Reviews from Our Fans</h2>
+    <div id="reviews" class="reviews-grid"></div>
+  </div>
+
+  <div class="version">v2.5.5</div>
 
   <script>
     async function loadTeam() {
@@ -164,44 +224,77 @@
       return "";
     }
 
-    // Star image base64 data URI (a simple gold star)
-    const starImgSrc = "data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkQ5NTAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PHBhdGggZD0iTTExLjk5IDYuMTI3bDIuNjQxIDUuMzg4IDYuMDk3Ljg3MS01LjQ3IDUuMTcyIDEuMjg0IDYuMDYyLTUuNjQ3LTMuMDIxLTUuNjQ3IDMuMDIxIDEuMjg0LTYuMDYyLTUuNDctNS4xNzIgNi4wOTctLjg3MSAyLjY0MS01LjM4OHoiLz48L3N2Zz4=";
+    // SVG icons for stars
+    const starFullSVG = `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M11.99 6.12l2.64 5.39 6.1.87-5.47 5.17 1.28 6.06-5.65-3.02-5.64 3.02 1.28-6.06-5.47-5.17 6.1-.87z"/>
+      </svg>
+    `;
+    const starHalfSVG = `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="half-grad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="50%" stop-color="#fd9500"/>
+            <stop offset="50%" stop-color="#ccc"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#half-grad)" d="M11.99 6.12l2.64 5.39 6.1.87-5.47 5.17 1.28 6.06-5.65-3.02-5.64 3.02 1.28-6.06-5.47-5.17 6.1-.87z"/>
+      </svg>
+    `;
+    const starEmptySVG = `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="star-empty">
+        <path d="M11.99 6.12l2.64 5.39 6.1.87-5.47 5.17 1.28 6.06-5.65-3.02-5.64 3.02 1.28-6.06-5.47-5.17 6.1-.87z"/>
+      </svg>
+    `;
 
-    // Array of good review phrases
-    const goodReviews = [
-      "Superficial Games is amazing!",
-      "Best gaming experience ever.",
-      "I love working here every day.",
-      "Creative, fun, and inspiring.",
-      "Our team rocks!",
-      "Gaming excellence at its finest.",
-      "A truly awesome place to be.",
-      "Innovating games with passion.",
-      "Where creativity meets fun!",
-      "Superficial Games is good"
+    // Example random reviews data
+    const reviewsData = [
+      {author: "Alice W.", rating: 5, text: "Amazing experience! Highly recommend."},
+      {author: "Bob K.", rating: 4.5, text: "Really fun games and great community."},
+      {author: "Carol D.", rating: 4, text: "Enjoyed my time here, friendly staff."},
+      {author: "David L.", rating: 5, text: "Best gaming platform I've used!"},
+      {author: "Eve M.", rating: 3.5, text: "Good but could improve some features."},
+      {author: "Frank P.", rating: 4, text: "Nice environment and well organized."},
+      {author: "Grace S.", rating: 5, text: "Exceptional service and quality."}
     ];
 
-    // Show random review + stars
-    function showRandomReview() {
-      const reviewTextEl = document.getElementById("review-text");
-      const starsContainer = document.getElementById("stars-container");
-
-      // Pick random review phrase
-      const phrase = goodReviews[Math.floor(Math.random() * goodReviews.length)];
-      reviewTextEl.textContent = `"${phrase}"`;
-
-      // Show 5 star images
-      starsContainer.innerHTML = "";
-      for (let i = 0; i < 5; i++) {
-        const img = document.createElement("img");
-        img.src = starImgSrc;
-        img.alt = "star";
-        starsContainer.appendChild(img);
+    // Generate stars HTML for given rating (e.g., 4.5)
+    function generateStars(rating) {
+      let html = '';
+      const fullStars = Math.floor(rating);
+      const halfStar = rating % 1 >= 0.5;
+      for (let i = 0; i < fullStars; i++) {
+        html += starFullSVG;
       }
+      if (halfStar) {
+        html += starHalfSVG;
+      }
+      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+      for (let i = 0; i < emptyStars; i++) {
+        html += starEmptySVG;
+      }
+      return html;
+    }
+
+    // Load reviews into the review section
+    function loadReviews() {
+      const container = document.getElementById('reviews');
+      reviewsData.forEach(review => {
+        const card = document.createElement('div');
+        card.className = 'review-card';
+
+        card.innerHTML = `
+          <div class="review-stars">${generateStars(review.rating)}</div>
+          <div class="review-text">"${review.text}"</div>
+          <div class="review-author">- ${review.author}</div>
+        `;
+
+        container.appendChild(card);
+      });
     }
 
     loadTeam();
-    showRandomReview();
+    loadReviews();
   </script>
 </body>
 </html>

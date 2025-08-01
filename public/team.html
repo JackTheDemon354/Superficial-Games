@@ -53,11 +53,12 @@
           card.className = 'team-card';
 
           card.innerHTML = `
-            <img src="/uploads/${member.image}" alt="${member.name}">
-            <h3>${member.name}</h3>
-            <p><strong>${member.role}</strong></p>
-            ${member.review ? `<p>💬 "${member.review}"</p>` : ''}
-          `;
+  <img src="/uploads/${member.image}" alt="${member.name}">
+  <h3>${member.name}</h3>
+  <p><strong>${member.role}</strong></p>
+  ${member.name === 'Jack van Wijk' ? '<p style="color: red; font-weight: bold;">#Boss</p>' : ''}
+  ${member.review ? `<p>💬 "${member.review}"</p>` : ''}
+`;
 
           container.appendChild(card);
         });

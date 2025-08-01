@@ -3,18 +3,24 @@
     "name": "Jack van Wijk",
     "role": "Boss, Director",
     "image": "JackVW.jpg",
-    "review": "It gives me joy to just think, "I am now a Dev in Coding: Superficial Games!"."
+    "review": "It gives me joy to just think, I am now a Dev in Coding: Superficial Games!"
   },
   {
     "name": "Chloe Gray-Morgan",
     "role": "Co-Boss, Organizer",
     "image": "ChloeGM.jpg",
-    "review": "I just love to work with Jack and Neve and I just think "Superficial Games... what an amazing name!"."
+    "review": "I just love to work with Jack and Neve and I just think Superficial Games... what an amazing name!"
   },
   {
     "name": "Neve Tucker",
     "role": "Co-Organizer, Backup-Backup Boss",
     "image": "NeveT.jpg",
     "review": "I love to organize the tree, and if Jack AND Chloe are sick, I am the boss for that day."
+  },
+  {
+    "name": "Isabelle Gao",
+    "role": "Guard, Backup-Backup Organizer"
+    "image": "IsabelleG.jpg"
+    "review": "I am the Guard at Superficial Games HQ and I stop people from coming in without a permit."
   }
 ]

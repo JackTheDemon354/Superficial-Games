@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Our Team - Superficial Games</title>
-  <link rel="stylesheet" href="/style.css" />
+  <title>Team & Reviews - Superficial Games</title>
   <style>
     body {
-      font-family: Calibri, sans-serif;
+      font-family: Calibri, Comic Sans MS;
       margin: 0;
       background: #f0f0f0;
     }
@@ -22,7 +21,7 @@
       margin-bottom: 10px;
     }
 
-    /* Team Cards */
+    /* TEAM CARDS */
     .team-grid {
       display: flex;
       flex-wrap: wrap;
@@ -42,6 +41,7 @@
       text-align: center;
       transition: transform 0.2s ease;
       overflow: hidden;
+      font-size: 14px;
     }
 
     .team-card:hover {
@@ -61,7 +61,7 @@
       opacity: 0;
       transform: translateY(15px);
       transition: all 0.4s ease;
-      font-size: 0.9em;
+      font-weight: bold;
     }
 
     .team-card:hover .tags {
@@ -83,19 +83,9 @@
     .tag-yellow { background: #f1c40f; color: #222; }
     .tag-green { background: limegreen; }
 
-    /* Reviews Section */
-    .reviews-section {
-      max-width: 1300px;
-      margin: 40px auto 20px;
-      padding: 0 20px;
-    }
-
-    .reviews-section h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .reviews-grid {
+    /* REVIEWS ROW */
+    .reviews-row {
+      margin-top: 40px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -103,67 +93,49 @@
     }
 
     .review-card {
+      width: 300px;
       background: white;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-      width: 300px;
-      padding: 20px;
-      font-size: 0.95em;
-      color: #222;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      padding: 16px;
+      text-align: center;
       position: relative;
-      user-select: none;
-      transition: transform 0.2s ease;
+      overflow: hidden;
+      font-size: 14px;
+      transition: transform 0.3s ease;
     }
 
     .review-card:hover {
       transform: translateY(-5px);
     }
 
-    /* Animate stars container on hover */
-    .review-card:hover .review-stars {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .review-stars {
+    .stars {
       margin-bottom: 10px;
       opacity: 0;
       transform: translateY(15px);
       transition: all 0.4s ease;
-      display: inline-flex;
-      gap: 3px;
-      justify-content: center;
+      display: inline-block;
     }
 
-    .review-stars svg {
-      width: 24px;
-      height: 24px;
-      fill: #fd9500; /* Gold */
-      flex-shrink: 0;
+    .review-card:hover .stars {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    /* Empty star greyed out */
-    .star-empty {
-      fill: #ccc;
+    /* Star SVG styling */
+    .stars svg {
+      width: 28px;
+      height: 28px;
+      vertical-align: middle;
+      margin: 0 2px;
     }
 
-    .review-text {
-      font-style: italic;
-      margin-bottom: 12px;
-      min-height: 60px;
-      text-align: center;
-    }
-
-    .review-author {
-      font-weight: bold;
-      text-align: right;
-      color: #555;
-    }
-
+    /* Version footer */
     .version {
       text-align: center;
-      margin: 40px 0;
+      margin-top: 50px;
       color: #888;
+      font-size: 13px;
       user-select: none;
     }
   </style>
@@ -172,16 +144,15 @@
   <div class="block">
     <h2>👥 Meet the Team</h2>
     <div id="team" class="team-grid"></div>
-  </div>
 
-  <div class="reviews-section">
     <h2>🌟 Reviews from Our Fans</h2>
-    <div id="reviews" class="reviews-grid"></div>
+    <div id="reviews" class="reviews-row"></div>
   </div>
 
-  <div class="version">v2.5.5</div>
+  <div class="version">v2.5.6</div>
 
   <script>
+    // Load Staff.json from your server
     async function loadTeam() {
       try {
         const res = await fetch('/data/Staff.json');
@@ -216,83 +187,83 @@
       }
     }
 
+    // Determine tag color class by name
     function getTagColorClass(name) {
       if (name.includes("Jack")) return "tag-red";
       if (name.includes("Chloe")) return "tag-orange";
       if (name.includes("Neve")) return "tag-yellow";
       if (name.includes("Isabelle")) return "tag-green";
-      return "";
+      return "tag-red"; // fallback
     }
 
-    // SVG icons for stars
-    const starFullSVG = `
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <path d="M11.99 6.12l2.64 5.39 6.1.87-5.47 5.17 1.28 6.06-5.65-3.02-5.64 3.02 1.28-6.06-5.47-5.17 6.1-.87z"/>
-      </svg>
-    `;
-    const starHalfSVG = `
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="half-grad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="50%" stop-color="#fd9500"/>
-            <stop offset="50%" stop-color="#ccc"/>
-          </linearGradient>
-        </defs>
-        <path fill="url(#half-grad)" d="M11.99 6.12l2.64 5.39 6.1.87-5.47 5.17 1.28 6.06-5.65-3.02-5.64 3.02 1.28-6.06-5.47-5.17 6.1-.87z"/>
-      </svg>
-    `;
-    const starEmptySVG = `
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="star-empty">
-        <path d="M11.99 6.12l2.64 5.39 6.1.87-5.47 5.17 1.28 6.06-5.65-3.02-5.64 3.02 1.28-6.06-5.47-5.17 6.1-.87z"/>
-      </svg>
-    `;
+    // SVG templates for stars
+    const starFullSVG = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="#FD9500" xmlns="http://www.w3.org/2000/svg"><path d="M11.99 6.127l2.641 5.388 6.097.871-5.47 5.172 1.284 6.062-5.646-3.021-5.646 3.021 1.284-6.062-5.47-5.172 6.097-.871 2.64-5.388z"/></svg>`;
+    const starEmptySVG = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><path d="M11.99 6.127l2.641 5.388 6.097.871-5.47 5.172 1.284 6.062-5.646-3.021-5.646 3.021 1.284-6.062-5.47-5.172 6.097-.871 2.64-5.388z"/></svg>`;
+    function starHalfSVG(id) {
+      return `
+        <svg aria-hidden="true" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+          <defs>
+            <linearGradient id="${id}">
+              <stop offset="50%" stop-color="#FD9500"/>
+              <stop offset="50%" stop-color="transparent"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#${id})" stroke="#FD9500" stroke-width="2" d="M11.99 6.127l2.641 5.388 6.097.871-5.47 5.172 1.284 6.062-5.646-3.021-5.646 3.021 1.284-6.062-5.47-5.172 6.097-.871 2.64-5.388z"/>
+        </svg>
+      `;
+    }
 
-    // Example random reviews data
-    const reviewsData = [
-      {author: "Alice W.", rating: 5, text: "Amazing experience! Highly recommend."},
-      {author: "Bob K.", rating: 4.5, text: "Really fun games and great community."},
-      {author: "Carol D.", rating: 4, text: "Enjoyed my time here, friendly staff."},
-      {author: "David L.", rating: 5, text: "Best gaming platform I've used!"},
-      {author: "Eve M.", rating: 3.5, text: "Good but could improve some features."},
-      {author: "Frank P.", rating: 4, text: "Nice environment and well organized."},
-      {author: "Grace S.", rating: 5, text: "Exceptional service and quality."}
-    ];
-
-    // Generate stars HTML for given rating (e.g., 4.5)
-    function generateStars(rating) {
-      let html = '';
+    // Render stars into container for any rating 0 to 5 with 0.5 steps
+    function renderStars(rating, container) {
+      container.innerHTML = "";
       const fullStars = Math.floor(rating);
       const halfStar = rating % 1 >= 0.5;
+      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
       for (let i = 0; i < fullStars; i++) {
-        html += starFullSVG;
+        container.insertAdjacentHTML('beforeend', starFullSVG);
       }
       if (halfStar) {
-        html += starHalfSVG;
+        // Unique gradient ID for each half star
+        const gradientId = 'grad' + Math.random().toString(36).slice(2, 7);
+        container.insertAdjacentHTML('beforeend', starHalfSVG(gradientId));
       }
-      const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
       for (let i = 0; i < emptyStars; i++) {
-        html += starEmptySVG;
+        container.insertAdjacentHTML('beforeend', starEmptySVG);
       }
-      return html;
     }
 
-    // Load reviews into the review section
+    // Reviews data (you can move this to JSON or API later)
+    const reviewsData = [
+      { name: "Eve M.", stars: 3.5, text: "Great games, but can improve UI a bit." },
+      { name: "Tom R.", stars: 5, text: "Absolutely love this company and the games!" },
+      { name: "Amy L.", stars: 4, text: "Fun team and exciting projects." },
+      { name: "John D.", stars: 4.5, text: "Awesome experience overall!" },
+      { name: "Sophie K.", stars: 3, text: "Good but needs more frequent updates." }
+    ];
+
+    // Load reviews on page
     function loadReviews() {
       const container = document.getElementById('reviews');
-      reviewsData.forEach(review => {
+      reviewsData.forEach((review, index) => {
         const card = document.createElement('div');
         card.className = 'review-card';
 
-        card.innerHTML = `
-          <div class="review-stars">${generateStars(review.rating)}</div>
-          <div class="review-text">"${review.text}"</div>
-          <div class="review-author">- ${review.author}</div>
-        `;
+        // Create stars container with animation
+        const starsContainer = document.createElement('div');
+        starsContainer.className = 'stars';
+        renderStars(review.stars, starsContainer);
 
+        card.innerHTML = `
+          <h3>${review.name}</h3>
+          <p>"${review.text}"</p>
+        `;
+        card.prepend(starsContainer);
         container.appendChild(card);
       });
     }
 
+    // Run loads
     loadTeam();
     loadReviews();
   </script>

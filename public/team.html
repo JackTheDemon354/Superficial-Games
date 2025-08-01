@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Our Team - Superficial Games</title>
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    .team-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 20px;
+    }
+    .team-card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      width: 250px;
+      text-align: center;
+      background: #f9f9f9;
+    }
+    .team-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .version {
+      text-align: center;
+      margin-top: 40px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="block">
+    <h2>👥 Meet the Team</h2>
+    <div id="team" class="team-grid"></div>
+  </div>
+
+  <div class="version">v2.5.1</div>
+
+  <script>
+    async function loadTeam() {
+      try {
+        const res = await fetch('/data/Staff.json');
+        const staff = await res.json();
+
+        const container = document.getElementById('team');
+        staff.forEach(member => {
+          const card = document.createElement('div');
+          card.className = 'team-card';
+
+          card.innerHTML = `
+            <img src="/uploads/${member.image}" alt="${member.name}">
+            <h3>${member.name}</h3>
+            <p><strong>${member.role}</strong></p>
+            ${member.review ? `<p>💬 "${member.review}"</p>` : ''}
+          `;
+
+          container.appendChild(card);
+        });
+      } catch (err) {
+        document.getElementById('team').innerText = 'Failed to load team data.';
+        console.error(err);
+      }
+    }
+
+    loadTeam();
+  </script>
+</body>
+</html>

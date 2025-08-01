@@ -40,5 +40,12 @@
     "image": "Poki.jpg",
     "review": "Visit https://poki.com to see all of our games! We like Superfical Games. They are the best!! -Poki",
     "tags": ["Supporter (1)", "Ideas (1)"]
+  },
+   {
+    "name": "Two Player Games.org",
+    "role": "Supporter (2), Ideas (2)",
+    "image": "2PGames.png",
+    "review": "Visit https://twoplayergames.org to see all of the 2 Player Games!! We like Superfical Games. They are the best, we are their sponsor.! -Two Player Games.org",
+    "tags": ["Supporter (2)", "Ideas (2)"]
   }
 ]

@@ -18,6 +18,13 @@
       width: 250px;
       text-align: center;
       background: #f9f9f9;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card:hover {
+      transform: translateY(-5px);
     }
     .team-card img {
       width: 100px;
@@ -26,11 +33,35 @@
       border-radius: 50%;
       margin-bottom: 10px;
     }
-    .version {
-      text-align: center;
-      margin-top: 40px;
-      color: #888;
+    .tags {
+      margin-top: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease-out;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
+    .team-card:hover .tags {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.9em;
+      color: white;
+      margin: 2px 4px;
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    /* Tag colors by name */
+    .Jack { background-color: red; }
+    .Chloe { background-color: orange; }
+    .Neve { background-color: goldenrod; }
+    .Isabelle { background-color: limegreen; }
   </style>
 </head>
 <body>
@@ -52,13 +83,24 @@
           const card = document.createElement('div');
           card.className = 'team-card';
 
+          let colorClass = '';
+          if (member.name.includes('Jack')) colorClass = 'Jack';
+          else if (member.name.includes('Chloe')) colorClass = 'Chloe';
+          else if (member.name.includes('Neve')) colorClass = 'Neve';
+          else if (member.name.includes('Isabelle')) colorClass = 'Isabelle';
+
+          const tagsArray = member.tags || [];
+          const tagsHTML = tagsArray.map((tag, i) =>
+            `<span class="tag ${colorClass}">#${tag}</span>${i < tagsArray.length - 1 ? ' - ' : ''}`
+          ).join('');
+
           card.innerHTML = `
-  <img src="/uploads/${member.image}" alt="${member.name}">
-  <h3>${member.name}</h3>
-  <p><strong>${member.role}</strong></p>
-  ${member.name === 'Jack van Wijk' ? '<p style="color: red; font-weight: bold;">#Boss</p>' : ''}
-  ${member.review ? `<p>💬 "${member.review}"</p>` : ''}
-`;
+            <img src="/uploads/${member.image}" alt="${member.name}">
+            <h3>${member.name}</h3>
+            <p><strong>${member.role}</strong></p>
+            ${member.review ? `<p>💬 "${member.review}"</p>` : ''}
+            <div class="tags">${tagsHTML}</div>
+          `;
 
           container.appendChild(card);
         });

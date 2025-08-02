@@ -3,144 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Team & Reviews - Superficial Games</title>
-  <style>
-    body {
-      font-family: Calibri, Comic Sans MS;
-      margin: 0;
-      background: #f0f0f0;
-    }
-
-    .block {
-      max-width: 1300px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    /* TEAM CARDS */
-    .team-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px 0;
-    }
-
-    .team-card {
-      position: relative;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 16px;
-      width: 250px;
-      background: #fff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-      text-align: center;
-      transition: transform 0.2s ease;
-      overflow: hidden;
-      font-size: 14px;
-    }
-
-    .team-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .team-card img {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-
-    .tags {
-      margin-top: 8px;
-      opacity: 0;
-      transform: translateY(15px);
-      transition: all 0.4s ease;
-      font-weight: bold;
-    }
-
-    .team-card:hover .tags {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 5px;
-      font-size: 0.8em;
-      color: white;
-      margin: 2px 4px;
-    }
-
-    .tag-red { background: #e74c3c; }
-    .tag-orange { background: #e67e22; }
-    .tag-yellow { background: #f1c40f; color: #222; }
-    .tag-green { background: limegreen; }
-    .tag-blue { background: #0000FF; }
-    .tag-pink { background: #DB0167; }
-    .tag-purple { background: #800080; }
-    .tag-brown { background: #A52A2A; }
-
-    /* REVIEWS ROW */
-    .reviews-row {
-      margin-top: 40px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .review-card {
-      width: 300px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-      padding: 16px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      font-size: 14px;
-      transition: transform 0.3s ease;
-    }
-
-    .review-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .stars {
-      margin-bottom: 10px;
-      opacity: 0;
-      transform: translateY(15px);
-      transition: all 0.4s ease;
-      display: inline-block;
-    }
-
-    .review-card:hover .stars {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .stars svg {
-      width: 28px;
-      height: 28px;
-      vertical-align: middle;
-      margin: 0 2px;
-    }
-
-    .version {
-      text-align: center;
-      margin-top: 50px;
-      color: #888;
-      font-size: 13px;
-      user-select: none;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="block">
@@ -158,8 +21,8 @@
       try {
         const res = await fetch('/data/Staff.json');
         const staff = await res.json();
-        const container = document.getElementById('team');
 
+        const container = document.getElementById('team');
         staff.forEach(member => {
           const card = document.createElement('div');
           card.className = 'team-card';

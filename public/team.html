@@ -51,8 +51,8 @@
     .team-card img {
       width: 90px;
       height: 90px;
-      object-fit: cover;
-      border-radius: 50%;
+      object-fit: contain;
+      border-radius: 10px;
       margin-bottom: 10px;
     }
 
@@ -86,7 +86,6 @@
     .tag-pink { background: #DB0167; }
     .tag-purple { background: #800080; }
     .tag-brown { background: #A52A2A; }
-
 
     /* REVIEWS ROW */
     .reviews-row {
@@ -127,7 +126,6 @@
       transform: translateY(0);
     }
 
-    /* Star SVG styling */
     .stars svg {
       width: 28px;
       height: 28px;
@@ -135,7 +133,6 @@
       margin: 0 2px;
     }
 
-    /* Version footer */
     .version {
       text-align: center;
       margin-top: 50px;
@@ -157,13 +154,12 @@
   <div class="version">v2.5.6</div>
 
   <script>
-    // Load Staff.json from your server
     async function loadTeam() {
       try {
         const res = await fetch('/data/Staff.json');
         const staff = await res.json();
-
         const container = document.getElementById('team');
+
         staff.forEach(member => {
           const card = document.createElement('div');
           card.className = 'team-card';
@@ -192,7 +188,6 @@
       }
     }
 
-    // Determine tag color class by name
     function getTagColorClass(name) {
       if (name.includes("Jack")) return "tag-red";
       if (name.includes("Chloe")) return "tag-orange";
@@ -201,11 +196,10 @@
       if (name.includes("Cool Math Games")) return "tag-blue";
       if (name.includes("Poki")) return "tag-pink";
       if (name.includes("Two Player Games.org")) return "tag-purple";
-      if (name.includes("Crazy Games")) return "tag-brown"
-      return "tag-red"; // fallback
+      if (name.includes("Crazy Games")) return "tag-brown";
+      return "tag-red";
     }
 
-    // SVG templates for stars
     const starFullSVG = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="#FD9500" xmlns="http://www.w3.org/2000/svg"><path d="M11.99 6.127l2.641 5.388 6.097.871-5.47 5.172 1.284 6.062-5.646-3.021-5.646 3.021 1.284-6.062-5.47-5.172 6.097-.871 2.64-5.388z"/></svg>`;
     const starEmptySVG = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><path d="M11.99 6.127l2.641 5.388 6.097.871-5.47 5.172 1.284 6.062-5.646-3.021-5.646 3.021 1.284-6.062-5.47-5.172 6.097-.871 2.64-5.388z"/></svg>`;
     function starHalfSVG(id) {
@@ -222,7 +216,6 @@
       `;
     }
 
-    // Render stars into container for any rating 0 to 5 with 0.5 steps
     function renderStars(rating, container) {
       container.innerHTML = "";
       const fullStars = Math.floor(rating);
@@ -241,7 +234,6 @@
       }
     }
 
-    // Load reviews from Reviews.json
     async function loadReviews() {
       try {
         const res = await fetch('/data/Reviews.json');
@@ -270,7 +262,6 @@
       }
     }
 
-    // Run loads
     loadTeam();
     loadReviews();
   </script>

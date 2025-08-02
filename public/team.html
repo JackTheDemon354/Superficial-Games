@@ -27,6 +27,10 @@
           const card = document.createElement('div');
           card.className = 'team-card';
 
+          const isLogo = ["Poki", "Cool Math Games", "Crazy Games", "Two Player Games.org"]
+            .some(logo => member.name.includes(logo));
+          if (isLogo) card.setAttribute("data-logo", "true");
+
           let tagHtml = '';
           if (member.tags && Array.isArray(member.tags)) {
             const colorClass = getTagColorClass(member.name);

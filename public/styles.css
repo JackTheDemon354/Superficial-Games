@@ -38,15 +38,23 @@ h2 {
   font-size: 14px;
 }
 
-.team-card:hover {
-  transform: translateY(-5px);
-}
-
+/* Default circular team member image */
 .team-card img {
-  width: 90px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   border-radius: 50%;
+  margin-bottom: 10px;
+  background: white;
+}
+
+/* Full logo override for game sites */
+.team-card[data-logo="true"] img {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0;
+  background: none;
   margin-bottom: 10px;
 }
 
@@ -127,6 +135,7 @@ h2 {
   margin: 0 2px;
 }
 
+/* Version info */
 .version {
   text-align: center;
   margin-top: 50px;
@@ -135,7 +144,7 @@ h2 {
   user-select: none;
 }
 
-/* GAME LOGOS */
+/* GAME LOGOS BAR */
 #games-logos {
   display: flex;
   justify-content: center;
